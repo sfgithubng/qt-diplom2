@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     dbStatsWindow = new DBStatsWindow(dbHandler);
     dbStatsWindow->setWindowTitle("Просмотр слов и их частоты в БД");
     QObject::connect(wordStatsAction, &QAction::triggered, dbStatsWindow, &DBStatsWindow::DBStatsWindowShow);
-    this->move(200, 200);
+    this->move(MAIN_WINDOW_OFFSET, MAIN_WINDOW_OFFSET);
 }
 
 MainWindow::~MainWindow() {
@@ -188,12 +188,13 @@ void MainWindow::OnSearchQueryUIChange() {
 
 void MainWindow::on_searchQueryRun_clicked() {
     ui->searchResults->setVisible(true);
+    ui->searchResults->setRowCount(EMPTY_SEARCH_TABLE);
+    ui->searchResults->setColumnCount(EMPTY_SEARCH_TABLE);
     auto dbSearchResults = dbHandler->RunSearch(ui->searchQueryEdit->text());
     if (dbSearchResults.isEmpty()) {
         return;
     }
-    ui->searchResults->setRowCount(0);
-    ui->searchResults->setColumnCount(1);
+    ui->searchResults->setColumnCount(SINGE_COLUMN_SEARCH_RESULT);
     quint32 rowCount{0};
     auto dbSearchResultsIter = --(dbSearchResults.keyValueEnd());
     quint32 maxRating{(*dbSearchResultsIter).first};
@@ -203,25 +204,35 @@ void MainWindow::on_searchQueryRun_clicked() {
     AddEntryToSearchResults(*dbSearchResults.keyValueBegin(), rowCount, maxRating);
     auto searchResultsWidth = ui->searchResults->width();
     ui->searchResults->setHorizontalHeaderLabels(QStringList{"Результаты поиска"});
-    ui->searchResults->horizontalHeader()->resizeSection(0, searchResultsWidth - 10);
+    auto searchResultsColumnWidth = searchResultsWidth - SEARCH_RESULTS_SCROLL_AREA_WIDTH;
+    ui->searchResults->horizontalHeader()->resizeSection(0, searchResultsColumnWidth);
     ui->searchResults->verticalHeader()->hide();
 }
 
 void MainWindow::AddEntryToSearchResults(QPair<rating, filePath> seachEntryVals,
                                          quint32& rowCount,
                                          const quint32& maxRating) {
-    quint32 relativeRating{seachEntryVals.first*100/maxRating};
+    if (maxRating == 0) {
+        return;
+    }
+    quint32 relativeRating{seachEntryVals.first*MAX_PERCENTAGE/maxRating};
     QString searchResultFileText = QString("Файл: %1").arg(seachEntryVals.second);
-    QString searchResultRelevanceText = QString("Относительное соответствие: %1/100").arg(relativeRating);
+    QString searchResultRelevanceText = QString("Относительное соответствие: %1/%2")
+                                            .arg(relativeRating)
+                                            .arg(MAX_PERCENTAGE);
     ui->searchResults->insertRow(rowCount++);
     QWidget* cellWidget = new QWidget;
     QVBoxLayout* cellVBox = new QVBoxLayout(cellWidget);
     QLabel* cellLabel;
     cellLabel = new QLabel(searchResultFileText);
     cellVBox->addWidget(cellLabel);
+    //delete cellLabel;
     cellLabel = new QLabel(searchResultRelevanceText);
     cellVBox->addWidget(cellLabel);
+    //delete cellLabel;
     ui->searchResults->setCellWidget(rowCount - 1, 0, cellWidget);
     ui->searchResults->resizeRowToContents(rowCount - 1);
+    //delete cellWidget;
+    //delete cellVBox;
 }
 

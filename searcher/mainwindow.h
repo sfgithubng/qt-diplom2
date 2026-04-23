@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#pragma once
 #include "dbhandler.h"
 #include "dbstatswindow.h"
 #include <QFile>
@@ -21,6 +20,11 @@ const QString CONFIG_ASSIGNMENT_OPERATOR{"="};
 const QString DEFAULT_SEARCH_CONTENT{"Введите запрос"};
 const qint32 FILE_NOT_FOUND{-1};
 const quint32 INCOMPLETE_CONFIG_LIST_LENGTH{0};
+const quint32 MAX_PERCENTAGE{100};
+const quint32 SEARCH_RESULTS_SCROLL_AREA_WIDTH{10};
+const quint32 SINGE_COLUMN_SEARCH_RESULT{1};
+const quint32 EMPTY_SEARCH_TABLE{0};
+const quint32 MAIN_WINDOW_OFFSET{200};
 
 enum class ConfigSettingsVarCodes {
     uninitialized,

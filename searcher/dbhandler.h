@@ -1,7 +1,6 @@
 #ifndef DBHANDLER_H
 #define DBHANDLER_H
 
-#pragma once
 #include <QDateTime>
 #include <QDebug>
 #include <QList>
