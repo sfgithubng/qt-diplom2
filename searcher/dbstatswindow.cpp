@@ -14,7 +14,6 @@ DBStatsWindow::DBStatsWindow(DBHandler* constrDbHandler,
 DBStatsWindow::~DBStatsWindow()
 {
     delete ui;
-    delete dbHandler;
 }
 
 void DBStatsWindow::DBStatsWindowShow() {

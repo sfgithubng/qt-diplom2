@@ -65,6 +65,7 @@ MainWindow::~MainWindow() {
     delete wordStatsAction;
     delete mainWindowStatusBar;
     delete dbStatsWindow;
+    delete dbHandler;
 }
 
 bool MainWindow::ProcessConfigFileLine(const QString& configFileLine) {
